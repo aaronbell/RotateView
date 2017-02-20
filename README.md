@@ -1,4 +1,4 @@
-![RotateView window](RotateView-1.png "RotateView")
+![RotateView window](RotateView.png "RotateView")
 
 # RotateView
 [Glyphs font editor](http://glyphsapp.com/) plugin that allows one to rotate a glyph and view it from different angles. This plugin was inspired by an experience in punchcutting and appreciating the ability to rotate a Glyph and look at curves from all angles. 
