@@ -7,10 +7,10 @@ Code is written by Aaron Bell
 
 #Usage
 
-Open the RotateView plugin from the Window menu. 
-It will automatically display the currently selected glyph. 
-Use the slider to rotate the glyph in the view clockwise and counter-clockwise.
-The window can be resized and the glyph will resize. 
+* Open the RotateView plugin from the Window menu. 
+* It will automatically display the currently selected glyph. 
+* Use the slider to rotate the glyph in the view clockwise and counter-clockwise.
+* The window can be resized and the glyph will resize. 
 
 👉Depends on Vanilla module. Please install it via Glyphs Preferences > Addons > Module
 
