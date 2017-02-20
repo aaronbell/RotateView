@@ -97,7 +97,7 @@ class RotateView(GeneralPlugin):
 
 		self.initiated = False 
 
-		self.w = Window((self.windowWidth, self.windowWidth), "Rotate viewer", minSize=(self.windowWidth, self.windowWidth+20))
+		self.w = Window((self.windowWidth, self.windowWidth), "RotateView", minSize=(self.windowWidth, self.windowWidth+20))
 		self.w.bind("resize", self.windowResize )
 		
 		self.w.inactiveView = Group((0, 0, -0, -0))
