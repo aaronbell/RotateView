@@ -21,9 +21,9 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>UpdateFeedURL</key>
-	<string>https://raw.githubusercontent.com/mekkablue/NotePalettes/master/GlyphNote.glyphsPalette/Contents/Info.plist</string>
+	<string>https://raw.githubusercontent.com/aaronbell/RotateView/master/RotateView.glyphsPlugin/Contents/Info.plist</string>
 	<key>productPageURL</key>
-	<string>https://github.com/mekkablue/NotePalettes</string>	
+	<string>https://github.com/aaronbell/RotateView</string>	
 	<key>productReleaseNotes</key>
 	<string>First Release version</string>
 	<key>NSHumanReadableCopyright</key>
