@@ -20,7 +20,7 @@ Tested on Glyphs 2.4.1 under OSX El Capitan. The script may not work under an ol
 
 # License
 
-Copyright 2017 Aaron Bell (@aaronbell & @sajatype). Special thanks to Mark Frömberg's Kernkraft plugin that explained how to draw outlines in Vanilla.
+Copyright 2017 Aaron Bell ([@aaronbell](http://twitter.com/aaronbell) & [@sajatype](http://twitter.com/sajatype)). Special thanks to Mark Frömberg's Kernkraft plugin that explained how to draw outlines in Vanilla and to Georg / Rainier who helped explain Glyphsapp callbacks.
 
 Licensed under the [Apache License](http://www.apache.org/licenses/LICENSE-2.0), Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 
