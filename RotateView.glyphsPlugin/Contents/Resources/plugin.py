@@ -42,24 +42,24 @@ class Viewer(NSView):
 		#------------------------
 		transform = NSAffineTransform.transform()
 		transform.scaleBy_( scaleFactor )
-
-		if glyphToRotate.bounds.origin.y < 0:
-			if glyphToRotate.bounds.origin.x < 0:
-				transform.translateXBy_yBy_(abs(glyphToRotate.bounds.origin.x),abs(glyphToRotate.bounds.origin.y))
+		bounds = glyphToRotate.bounds
+		if bounds.origin.y < 0:
+			if bounds.origin.x < 0:
+				transform.translateXBy_yBy_(abs(bounds.origin.x),abs(bounds.origin.y))
 			else:
-				transform.translateXBy_yBy_(-glyphToRotate.bounds.origin.x,abs(glyphToRotate.bounds.origin.y))
+				transform.translateXBy_yBy_(-bounds.origin.x,abs(bounds.origin.y))
 		else:
-			if glyphToRotate.bounds.origin.x < 0:
-				transform.translateXBy_yBy_(abs(glyphToRotate.bounds.origin.x),-glyphToRotate.bounds.origin.y)
+			if bounds.origin.x < 0:
+				transform.translateXBy_yBy_(abs(bounds.origin.x),-bounds.origin.y)
 			else:
-				transform.translateXBy_yBy_(-glyphToRotate.bounds.origin.x,-glyphToRotate.bounds.origin.y)
+				transform.translateXBy_yBy_(-bounds.origin.x,-bounds.origin.y)
 
 		self._previewPath.bezierPath.transformUsingAffineTransform_( transform )
 		
 		## positioning to the middle of the viewport
 		#------------------------
 		centering = NSAffineTransform.transform()
-		centering.translateXBy_yBy_( (self._windowWidth - (glyphToRotate.bounds.size.width * scaleFactor)) / 2, (self._windowHeight - (glyphToRotate.bounds.size.height * scaleFactor))/2)
+		centering.translateXBy_yBy_( (self._windowWidth - (bounds.size.width * scaleFactor)) / 2, (self._windowHeight - (bounds.size.height * scaleFactor))/2)
 		self._previewPath.bezierPath.transformUsingAffineTransform_( centering )
 
 		## rotational
