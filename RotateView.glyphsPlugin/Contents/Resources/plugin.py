@@ -16,7 +16,8 @@
 
 from GlyphsApp.plugins import *
 from vanilla import *
-from AppKit import NSAffineTransform, NSRectFill, NSView, NSNoBorder, NSColor
+from AppKit import NSAffineTransform, NSRectFill, NSView, NSNoBorder, NSColor, NSBezierPath
+from Foundation import NSWidth, NSHeight, NSMidX, NSMidY
 import traceback
 
 ## Viewer class that contains the copied glyph
@@ -24,8 +25,10 @@ import traceback
 
 class RoatatePreviewView(NSView):
 	def drawRect_(self, rect):
+		
 		NSColor.whiteColor().set()
 		NSBezierPath.fillRect_(rect)
+		
 		glyphToRotate = None
 		try:
 			glyphToRotate = Glyphs.font.selectedLayers[0]
@@ -79,7 +82,7 @@ class RoatatePreview(VanillaBaseObject):
 		self._setupView(self.nsGlyphPreviewClass, posSize)
 		self._nsObject.wrapper = self
 	def redraw(self):
-		self._nsObject.setNeedsDisplay_(YES)
+		self._nsObject.setNeedsDisplay_(True)
 
 class RotateView(GeneralPlugin):
 	def settings(self):
@@ -90,6 +93,7 @@ class RotateView(GeneralPlugin):
 
 	def showWindow(self, sender):
 		try:
+			
 			self.windowWidth = 300
 			self.windowHeight = 240
 			
