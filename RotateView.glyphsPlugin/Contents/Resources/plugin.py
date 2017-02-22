@@ -24,65 +24,53 @@ import traceback
 
 class RoatatePreviewView(NSView):
 	def drawRect_(self, rect):
-
-		glyphToRotate = self._glyphToRotate
-		self._previewPath = glyphToRotate.copyDecomposedLayer()
-		rotationFactor = self._rotationFactor
-		windowWidth = self._windowWidth
-		windowHeight = self._windowHeight
-
-		if windowWidth > windowHeight+60:		#modification of the scaleFactor to allow it to grow with the window
-			scaler = (windowHeight+60) / 300
-		else:
-			scaler = windowWidth / 300
-
-		scaleFactor = 1 / (glyphToRotate.parent.parent.upm / (2 * 100.0) ) * (scaler)
-
-		## scaling and zeroing the glyph
-		#------------------------
-		transform = NSAffineTransform.transform()
-		transform.scaleBy_( scaleFactor )
-		bounds = glyphToRotate.bounds
-		if bounds.origin.y < 0:
-			if bounds.origin.x < 0:
-				transform.translateXBy_yBy_(abs(bounds.origin.x),abs(bounds.origin.y))
-			else:
-				transform.translateXBy_yBy_(-bounds.origin.x,abs(bounds.origin.y))
-		else:
-			if bounds.origin.x < 0:
-				transform.translateXBy_yBy_(abs(bounds.origin.x),-bounds.origin.y)
-			else:
-				transform.translateXBy_yBy_(-bounds.origin.x,-bounds.origin.y)
-
-		self._previewPath.bezierPath.transformUsingAffineTransform_( transform )
+		NSColor.whiteColor().set()
+		NSBezierPath.fillRect_(rect)
+		glyphToRotate = None
+		try:
+			glyphToRotate = Glyphs.font.selectedLayers[0]
+		except:
+			print traceback.format_exc()
 		
-		## positioning to the middle of the viewport
-		#------------------------
-		centering = NSAffineTransform.transform()
-		centering.translateXBy_yBy_( (self._windowWidth - (bounds.size.width * scaleFactor)) / 2, (self._windowHeight - (bounds.size.height * scaleFactor))/2)
-		self._previewPath.bezierPath.transformUsingAffineTransform_( centering )
-
-		## rotational
-		#------------------------
-
-		mMatrix = NSAffineTransform.transform()
-		mMatrix.translateXBy_yBy_( -windowWidth / 2, -windowHeight / 2)
-		self._previewPath.bezierPath.transformUsingAffineTransform_( mMatrix )
-
-		rMatrix = NSAffineTransform.transform()
-		rMatrix.rotateByDegrees_(rotationFactor)
-		self._previewPath.bezierPath.transformUsingAffineTransform_( rMatrix )
-		self._currentRotation = rotationFactor
-
-
-		move = NSAffineTransform.transform()
-		move.translateXBy_yBy_( windowWidth / 2, windowHeight/2)
-		self._previewPath.bezierPath.transformUsingAffineTransform_( move )
+		if glyphToRotate is None:
+			return
 		
-		## fill path
-		#------------------------
-		NSColor.blackColor().set()
-		self._previewPath.bezierPath.fill()
+		try:
+			previewPath = glyphToRotate.completeBezierPath
+		
+			rotationFactor = self.wrapper._rotationFactor
+			Width = NSWidth(self.frame())
+			Height = NSHeight(self.frame())
+			
+			scaleFactor = 0.666666 / (glyphToRotate.parent.parent.upm / min(Width, Height))
+			
+			## scaling and zeroing the glyph
+			#------------------------
+			transform = NSAffineTransform.transform()
+			transform.scaleBy_( scaleFactor )
+			bounds = glyphToRotate.bounds
+			transform.translateXBy_yBy_(-NSMidX(bounds),-NSMidY(bounds))
+			previewPath.transformUsingAffineTransform_( transform )
+			
+			## rotation
+			#------------------------
+			transform = NSAffineTransform.transform()
+			transform.rotateByDegrees_(rotationFactor)
+			previewPath.transformUsingAffineTransform_( transform )
+			
+			## positioning to the middle of the viewport
+			#------------------------
+			transform = NSAffineTransform.transform()
+			transform.translateXBy_yBy_( Width / 2, Height / 2)
+			previewPath.transformUsingAffineTransform_(transform)
+	
+			## fill path
+			#------------------------
+			NSColor.blackColor().set()
+			previewPath.fill()
+		
+		except:
+			print traceback.format_exc()
 
 class RoatatePreview(VanillaBaseObject):
 	nsGlyphPreviewClass = RoatatePreviewView
