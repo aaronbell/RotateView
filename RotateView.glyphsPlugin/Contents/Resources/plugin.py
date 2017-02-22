@@ -96,12 +96,13 @@ class RotateView(GeneralPlugin):
 		self.windowHeight = 240
 
 		self.initiated = False 
+		self.inactive = True
 
 		self.w = Window((self.windowWidth, self.windowWidth), "RotateView", minSize=(self.windowWidth, self.windowWidth+20))
 		self.w.bind("resize", self.windowResize )
 		
 		self.w.inactiveView = Group((0, 0, -0, -0))
-		self.w.inactiveView.textBox = TextBox( (0, self.windowHeight/2, self.windowWidth, 22), text="Please select a glyph", alignment="center")	
+		self.w.inactiveView.textBox = TextBox( (0, self.windowHeight/2, -0, 22), text="Please select a glyph", alignment="center")	
 		setattr(self.w,"box",self.w.inactiveView)
 
 		self.w.controlBox = Group((0, -60, -0, -0))
@@ -111,17 +112,21 @@ class RotateView(GeneralPlugin):
 		
 		self.w.open()
 
-		if Glyphs.font.currentTab: #checks if you are in the Active Tab or not and returns the right value for currentl selection
-			if Glyphs.font.selectedLayers: #checks if there are any glyphs selected
-				if Glyphs.font.selectedLayers[0].bezierPath or Glyphs.font.selectedLayers[0].components: #checks if the selected glyph contains anything
-					self.initializeViewer()
+		if Glyphs.font:
+			if Glyphs.font.currentTab: #checks if you are in the Active Tab or not and returns the right value for currentl selection
+				if Glyphs.font.selectedLayers: #checks if there are any glyphs selected
+					if Glyphs.font.selectedLayers[0].bezierPath or Glyphs.font.selectedLayers[0].components: #checks if the selected glyph contains anything
+						self.initializeViewer()
+			else:
+				if Glyphs.font.selection: #same as above, but for the Font View
+					if Glyphs.font.selection[0].layers[Glyphs.font.selectedFontMaster.id].bezierPath or Glyphs.font.selection[0].layers[Glyphs.font.selectedFontMaster.id].components:
+						self.initializeViewer()
 		else:
-			if Glyphs.font.selection: #same as above, but for the Font View
-				if Glyphs.font.selection[0].layers[Glyphs.font.selectedFontMaster.id].bezierPath or Glyphs.font.selection[0].layers[Glyphs.font.selectedFontMaster.id].components:
-					self.initializeViewer()
+			self.w.inactiveView.textBox.set("Please open a font")
 
 		
 		Glyphs.addCallback( self.changeGlyph, UPDATEINTERFACE ) #will be called on ever change to the interface
+		Glyphs.addCallback( self.docClosed, DOCUMENTCLOSED )
 
 	## initializes the glyph Viewer with default values
 	#------------------------------
@@ -132,6 +137,7 @@ class RotateView(GeneralPlugin):
 			self.w.controlBox.slider.getNSSlider().setEnabled_(True)
 			self.initiated = True
 			self.inactive = False
+			self.w.inactiveView.textBox.set("Please select a glyph")
 
 		self.viewBox = Viewer.alloc().init()
 
@@ -182,59 +188,71 @@ class RotateView(GeneralPlugin):
 	#------------------------------
 
 	def changeGlyph(self, sender):
-
-		if self.initiated == False: #if the viewer hasn't been inialized, this will do that process instead of the change glyph functionality
-			if Glyphs.font.currentTab:
-				if Glyphs.font.selectedLayers:
-					if Glyphs.font.selectedLayers[0].bezierPath or Glyphs.font.selectedLayers[0].components:
-						self.initializeViewer()
+		if Glyphs.font:
+			if self.initiated == False: #if the viewer hasn't been inialized, this will do that process instead of the change glyph functionality
+				if Glyphs.font.currentTab:
+					if Glyphs.font.selectedLayers:
+						if Glyphs.font.selectedLayers[0].bezierPath or Glyphs.font.selectedLayers[0].components:
+							self.initializeViewer()
+						else:
+							self.w.inactiveView.textBox.set("Please select a glyph")
+				else:
+					if Glyphs.font.selection:
+						if Glyphs.font.selection[0].layers[Glyphs.font.selectedFontMaster.id].bezierPath or Glyphs.font.selection[0].layers[Glyphs.font.selectedFontMaster.id].components:
+							self.initializeViewer()
+						else:
+							self.w.inactiveView.textBox.set("Please select a glyph")
 			else:
-				if Glyphs.font.selection:
-					if Glyphs.font.selection[0].layers[Glyphs.font.selectedFontMaster.id].bezierPath or Glyphs.font.selection[0].layers[Glyphs.font.selectedFontMaster.id].components:
-						self.initializeViewer()
+				if Glyphs.font.currentTab: #the rule we need to use for identifying the currently selected glyph differs between the Font View and Active View
+					if Glyphs.font.selectedLayers:
+						if Glyphs.font.selectedLayers[0].bezierPath or Glyphs.font.selectedLayers[0].components:
+							self.viewBox._glyphToRotate = Glyphs.font.selectedLayers[0]
+							self.inactive = False
+							self.w.controlBox.slider.getNSSlider().setEnabled_(True) # should a glyph not be selected, or is empty, the window switches into an inactive mode
+						else:
+							self.inactive = True
+							self.w.controlBox.slider.getNSSlider().setEnabled_(False)
+					else:
+						self.inactive = True
+						self.w.controlBox.slider.getNSSlider().setEnabled_(False)
+				else:
+					if Glyphs.font.selection:
+						if Glyphs.font.selection[0].layers[Glyphs.font.selectedFontMaster.id].bezierPath or Glyphs.font.selection[0].layers[Glyphs.font.selectedFontMaster.id].components:
+							self.viewBox._glyphToRotate = Glyphs.font.selection[0].layers[Glyphs.font.selectedFontMaster.id]
+							self.inactive = False
+							self.w.controlBox.slider.getNSSlider().setEnabled_(True)
+						else:
+							self.inactive = True
+							self.w.controlBox.slider.getNSSlider().setEnabled_(False)
+					else:
+						self.inactive = True
+						self.w.controlBox.slider.getNSSlider().setEnabled_(False)
+
+				delattr(self.w, "box")
+
+				if self.inactive == True:	
+					self.w.inactiveView.textBox.set("No glyph to display")
+					setattr(self.w,"box",self.w.inactiveView)
+				else:
+					setattr(self.w, "box", self.scrollView())
 		else:
-			if Glyphs.font.currentTab: #the rule we need to use for identifying the currently selected glyph differs between the Font View and Active View
-				if Glyphs.font.selectedLayers:
-					if Glyphs.font.selectedLayers[0].bezierPath or Glyphs.font.selectedLayers[0].components:
-						self.viewBox._glyphToRotate = Glyphs.font.selectedLayers[0]
-						self.inactive = False
-						self.w.controlBox.slider.getNSSlider().setEnabled_(True) # should a glyph not be selected, or is empty, the window switches into an inactive mode
-					else:
-						self.inactive = True
-						self.w.controlBox.slider.getNSSlider().setEnabled_(False)
-				else:
-					self.inactive = True
-					self.w.controlBox.slider.getNSSlider().setEnabled_(False)
-			else:
-				if Glyphs.font.selection:
-					if Glyphs.font.selection[0].layers[Glyphs.font.selectedFontMaster.id].bezierPath or Glyphs.font.selection[0].layers[Glyphs.font.selectedFontMaster.id].components:
-						self.viewBox._glyphToRotate = Glyphs.font.selection[0].layers[Glyphs.font.selectedFontMaster.id]
-						self.inactive = False
-						self.w.controlBox.slider.getNSSlider().setEnabled_(True)
-					else:
-						self.inactive = True
-						self.w.controlBox.slider.getNSSlider().setEnabled_(False)
-				else:
-					self.inactive = True
-					self.w.controlBox.slider.getNSSlider().setEnabled_(False)
-
 			delattr(self.w, "box")
-
-			if self.inactive == True:	
-				self.w.inactiveView.textBox.set("No glyph to display")
-				setattr(self.w,"box",self.w.inactiveView)
-			else:
-				setattr(self.w, "box", self.scrollView())
-
+			self.inactive = True
+			self.w.controlBox.slider.getNSSlider().setEnabled_(False)
+			self.w.inactiveView.textBox.set("Please open a font")
+			setattr(self.w,"box",self.w.inactiveView)
 
 
 	def windowResize(self, sender):
 		self.windowWidth = sender.getPosSize()[2]
 		self.windowHeight = sender.getPosSize()[3]-60 #leaves room for the controls
 
-		self.viewBox._windowWidth = self.windowWidth
-		self.viewBox._windowHeight = self.windowHeight
-		self.viewBox.setFrame_( ((0, 0), (self.windowWidth, self.windowHeight)) )
+		if self.initiated == True:
+			self.viewBox._windowWidth = self.windowWidth
+			self.viewBox._windowHeight = self.windowHeight
+			self.viewBox.setFrame_( ((0, 0), (self.windowWidth, self.windowHeight)) )
+		
+		self.w.inactiveView.textBox.setPosSize((0, self.windowHeight/2, -0, 22))
 
 		delattr(self.w, "box")
 
@@ -244,12 +262,20 @@ class RotateView(GeneralPlugin):
 			setattr(self.w, "box", self.scrollView())
 
 
+	def docClosed(self, sender):
+		delattr(self.w, "box")
+		self.inactive = True
+		self.w.controlBox.slider.getNSSlider().setEnabled_(False)
+		self.w.inactiveView.textBox.set("Please open a font")
+		setattr(self.w,"box",self.w.inactiveView)
+
 	def start(self):
 		newMenuItem = NSMenuItem(self.name, self.showWindow)
 		Glyphs.menu[WINDOW_MENU].append(newMenuItem)
 
 	def __del__(self):
 		Glyphs.removeCallback( self.changeGlyph, UPDATEINTERFACE )
+		Glyphs.removeCallback( self.docClosed, DOCUMENTCLOSED )
 
 	def __file__(self):
 		"""Please leave this method unchanged"""
