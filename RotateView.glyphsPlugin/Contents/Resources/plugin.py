@@ -30,6 +30,12 @@ class RoatatePreviewView(NSView):
 		
 		NSColor.whiteColor().set()
 		NSBezierPath.fillRect_(rect)
+
+		if Glyphs.font is None:
+			return
+		
+		if not Glyphs.font.selectedLayers:
+			return
 		
 		glyphToRotate = None
 		try:
@@ -128,7 +134,7 @@ class RotateView(GeneralPlugin):
 	#------------------------------
 	
 	def changeGlyph(self, sender):
-		self.w.controlBox.slider.getNSSlider().setEnabled_(len(Glyphs.font.selectedLayers) > 0)
+		self.w.controlBox.slider.getNSSlider().setEnabled_(Glyphs.font and Glyphs.font.selectedLayers)
 		self.w.Preview.redraw()
 
 	def start(self):
