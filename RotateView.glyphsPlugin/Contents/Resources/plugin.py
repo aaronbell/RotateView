@@ -16,7 +16,8 @@
 
 from GlyphsApp import *
 from GlyphsApp.plugins import *
-from vanilla import *
+import objc
+from vanilla import VanillaBaseObject
 from AppKit import NSAffineTransform, NSRectFill, NSView, NSNoBorder, NSColor, NSBezierPath
 from Foundation import NSWidth, NSHeight, NSMidX, NSMidY
 import traceback
@@ -94,7 +95,7 @@ class RotateView(GeneralPlugin):
 
 	def showWindow(self, sender):
 		try:
-			
+			from vanilla import Group, Slider, TextBox, Window
 			self.windowWidth = 300
 			self.windowHeight = 240
 			
