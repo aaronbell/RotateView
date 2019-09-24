@@ -16,7 +16,8 @@
 
 from GlyphsApp import *
 from GlyphsApp.plugins import *
-from vanilla import *
+import objc
+from vanilla import VanillaBaseObject
 from AppKit import NSAffineTransform, NSRectFill, NSView, NSNoBorder, NSColor, NSBezierPath
 from Foundation import NSWidth, NSHeight, NSMidX, NSMidY
 import traceback
@@ -29,6 +30,12 @@ class RoatatePreviewView(NSView):
 		
 		NSColor.whiteColor().set()
 		NSBezierPath.fillRect_(rect)
+
+		if Glyphs.font is None:
+			return
+		
+		if not Glyphs.font.selectedLayers:
+			return
 		
 		glyphToRotate = None
 		try:
@@ -94,7 +101,7 @@ class RotateView(GeneralPlugin):
 
 	def showWindow(self, sender):
 		try:
-			
+			from vanilla import Group, Slider, TextBox, Window
 			self.windowWidth = 300
 			self.windowHeight = 240
 			
@@ -127,7 +134,7 @@ class RotateView(GeneralPlugin):
 	#------------------------------
 	
 	def changeGlyph(self, sender):
-		self.w.controlBox.slider.getNSSlider().setEnabled_(len(Glyphs.font.selectedLayers) > 0)
+		self.w.controlBox.slider.getNSSlider().setEnabled_(Glyphs.font and Glyphs.font.selectedLayers)
 		self.w.Preview.redraw()
 
 	def start(self):
