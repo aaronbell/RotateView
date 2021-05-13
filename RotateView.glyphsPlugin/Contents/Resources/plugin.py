@@ -130,8 +130,8 @@ class RotateView(GeneralPlugin):
 			
 			self.w.Preview = RoatatePreview((0, 0, -0, -28))
 			self.w.controlBox = Group((0, -28, -0, -0))
-			self.w.controlBox.slider = Slider((10, 0, -55, 28), tickMarkCount=17, callback=self.sliderCallback, value=0, minValue=-360, maxValue=360)
-			self.w.controlBox.textBox = TextBox( (-55, -23, -4, -3), text="0°", alignment="center")
+			self.w.controlBox.slider = Slider((10, 2, -55, 28), tickMarkCount=17, callback=self.sliderCallback, value=0, minValue=-360, maxValue=360)
+			self.w.controlBox.textBox = TextBox( (-55, -23, -5, -3), text="0°", alignment="center")
 			self.w.controlBox.slider.getNSSlider().setEnabled_(False)
 		
 			self.w.open()
