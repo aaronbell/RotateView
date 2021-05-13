@@ -74,7 +74,7 @@ class RotatePreviewView(NSView):
 			## positioning to the middle of the viewport
 			#------------------------
 			transform = NSAffineTransform.transform()
-			transform.translateXBy_yBy_( Width / 2, Height / 2)
+			transform.translateXBy_yBy_( Width / 2, Height / 2 - 8)
 			previewPath.transformUsingAffineTransform_(transform)
 	
 			## fill path
