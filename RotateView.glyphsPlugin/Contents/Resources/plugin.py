@@ -19,7 +19,7 @@ import objc
 from GlyphsApp import *
 from GlyphsApp.plugins import *
 from vanilla import VanillaBaseObject
-from AppKit import NSAffineTransform, NSRectFill, NSView, NSNoBorder, NSColor, NSBezierPath
+from AppKit import NSAffineTransform, NSRectFill, NSView, NSNoBorder, NSColor, NSBezierPath, NSFullSizeContentViewWindowMask
 from Foundation import NSWidth, NSHeight, NSMidX, NSMidY
 import traceback
 
@@ -118,12 +118,20 @@ class RotateView(GeneralPlugin):
 			self.windowWidth = 300
 			self.windowHeight = 240
 			
-			self.w = Window((self.windowWidth, self.windowWidth), "Rotate View", minSize=(self.windowWidth, self.windowWidth+20))
+			self.w = Window((self.windowWidth, self.windowWidth), "Rotate View", minSize=(self.windowWidth, self.windowWidth))
+			window = self.w.getNSWindow()
+			window.setStyleMask_(window.styleMask() | NSFullSizeContentViewWindowMask)
+			try:# only available in 10.10
+				window.setTitlebarAppearsTransparent_(True)
+			except:
+				pass
+			#window.toolbar = nil;
+			window.setMovableByWindowBackground_(True)
 			
-			self.w.Preview = RoatatePreview((0, 0, -0, -60))
-			self.w.controlBox = Group((0, -60, -0, -0))
-			self.w.controlBox.slider = Slider((10, 6, -10, 23), tickMarkCount=17, callback=self.sliderCallback, value=0, minValue=-360, maxValue=360)
-			self.w.controlBox.textBox = TextBox( (10, -25, -10, 22), text="0.00°", alignment="center")
+			self.w.Preview = RoatatePreview((0, 0, -0, -28))
+			self.w.controlBox = Group((0, -28, -0, -0))
+			self.w.controlBox.slider = Slider((10, 0, -55, 28), tickMarkCount=17, callback=self.sliderCallback, value=0, minValue=-360, maxValue=360)
+			self.w.controlBox.textBox = TextBox( (-55, -23, -4, -3), text="0°", alignment="center")
 			self.w.controlBox.slider.getNSSlider().setEnabled_(False)
 		
 			self.w.open()
@@ -141,7 +149,7 @@ class RotateView(GeneralPlugin):
 	
 	@objc.python_method
 	def sliderCallback(self, sender):
-		currentValue = '{:.2f}'.format(sender.get())
+		currentValue = '{:.0f}'.format(sender.get())
 		self.w.controlBox.textBox.set(str(currentValue)+"°")
 		self.w.Preview._rotationFactor = float(currentValue)
 		self.w.Preview.redraw()
