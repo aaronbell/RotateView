@@ -20,7 +20,7 @@ Install by clicking its *Install* button in *Window > Plugin Manager > Plugins* 
 
 # Requirements
 
-Tested on Glyphs 2.4.1 under OSX El Capitan. The script may not work under an older version of Glyphs or OS.
+Tested on Glyphs 3.0.
 
 # License
 
