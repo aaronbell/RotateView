@@ -13,7 +13,7 @@
 	<key>CFBundleName</key>
 	<string>RotateView</string>
 	<key>CFBundleVersion</key>
-	<string>3</string>
+	<string>5</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.2</string>
 	<key>UpdateFeedURL</key>
@@ -23,7 +23,7 @@
 	<key>productReleaseNotes</key>
 	<string>Glyphs 3 compatibility</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright, Aaron Bell, 2017</string>
+	<string>Copyright, Aaron Bell, 2021</string>
 	<key>NSPrincipalClass</key>
 	<string>RotateView</string>
 	<key>PyMainFileNames</key>
