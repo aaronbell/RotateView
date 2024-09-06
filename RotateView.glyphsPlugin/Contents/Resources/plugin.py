@@ -154,9 +154,10 @@ class RotateView(GeneralPlugin):
 
 	@objc.python_method
 	def sliderCallback(self, sender):
-		currentValue = '{:.0f}'.format(sender.get())
-		self.w.controlBox.textBox.set(str(currentValue) + "°")
-		self.w.Preview._rotationFactor = float(currentValue)
+		value = sender.get()
+		currentValue = '{:.0f}°'.format(value)
+		self.w.controlBox.textBox.set(currentValue)
+		self.w.Preview._rotationFactor = float(value)
 		self.w.Preview.redraw()
 
 	## on Glyph Change, update the viewer
