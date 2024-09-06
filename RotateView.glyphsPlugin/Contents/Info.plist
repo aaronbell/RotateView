@@ -13,9 +13,9 @@
 	<key>CFBundleName</key>
 	<string>RotateView</string>
 	<key>CFBundleVersion</key>
-	<string>5</string>
+	<string>6</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.2</string>
+	<string>1.2.1</string>
 	<key>UpdateFeedURL</key>
 	<string>https://raw.githubusercontent.com/aaronbell/RotateView/master/RotateView.glyphsPlugin/Contents/Info.plist</string>
 	<key>productPageURL</key>
