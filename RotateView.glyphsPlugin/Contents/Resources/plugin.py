@@ -133,6 +133,7 @@ class RotateView(GeneralPlugin):
 			# window.toolbar = nil;
 			window.setMovableByWindowBackground_(True)
 
+			self.w.bind("close", self.closeWindow)
 			self.w.Preview = RoatatePreview((0, 0, -0, -28))
 			self.w.controlBox = Group((0, -28, -0, -0))
 			self.w.controlBox.slider = Slider((10, 2, -55, 28), tickMarkCount=17, callback=self.sliderCallback, value=0, minValue=-360, maxValue=360)
@@ -146,8 +147,8 @@ class RotateView(GeneralPlugin):
 			print(traceback.format_exc())
 
 	@objc.python_method
-	def __del__(self):
-		Glyphs.removeCallback( self.changeGlyph_, UPDATEINTERFACE )
+	def closeWindow(self, sender):
+		Glyphs.removeCallback(self.changeGlyph_, UPDATEINTERFACE)
 
 	## slider callback
 	# ------------------------------
