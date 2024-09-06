@@ -34,15 +34,17 @@ class RotatePreviewView(NSView):
 		NSColor.whiteColor().set()
 		NSBezierPath.fillRect_(rect)
 
-		if Glyphs.font is None:
+		font = Glyphs.font
+		if font is None:
 			return
 
-		if not Glyphs.font.selectedLayers:
+		selectedLayers = font.selectedLayers
+		if not selectedLayers:
 			return
 
 		glyphToRotate = None
 		try:
-			glyphToRotate = Glyphs.font.selectedLayers[0]
+			glyphToRotate = selectedLayers[0]
 		except:
 			print(traceback.format_exc())
 
