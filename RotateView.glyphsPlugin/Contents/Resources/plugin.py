@@ -16,10 +16,10 @@ from __future__ import division, print_function, unicode_literals
 # https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/CocoaViewsGuide/SubclassingNSView/SubclassingNSView.html
 
 import objc
-from GlyphsApp import Glyphs, UPDATEINTERFACE, WINDOW_MENU
+from GlyphsApp import Glyphs, UPDATEINTERFACE, WINDOW_MENU, NSMenuItem
 from GlyphsApp.plugins import GeneralPlugin
 from vanilla import VanillaBaseObject, Group, Slider, TextBox, Window
-from AppKit import NSAffineTransform, NSView, NSMenuItem, NSColor, NSBezierPath, NSFullSizeContentViewWindowMask
+from AppKit import NSAffineTransform, NSView, NSColor, NSBezierPath, NSFullSizeContentViewWindowMask
 from Foundation import NSWidth, NSHeight, NSMidX, NSMidY
 import traceback
 
@@ -111,8 +111,10 @@ class RotateView(GeneralPlugin):
 
 	@objc.python_method
 	def start(self):
-		newMenuItem = NSMenuItem(self.name, self.showWindow_)
-		newMenuItem.setTarget_(self)
+		if Glyphs.versionNumber >= 3.3:
+			newMenuItem = NSMenuItem(self.name, callback=self.showWindow_, target=self)
+		else:
+			newMenuItem = NSMenuItem(self.name, self.showWindow_)
 		Glyphs.menu[WINDOW_MENU].append(newMenuItem)
 
 	## creates Vanilla Window
